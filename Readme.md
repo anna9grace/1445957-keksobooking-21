@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анна Родионова](https://up.htmlacademy.ru/javascript/21/user/1445957).
-* Наставник: `Неизвестно`.
+* Наставник: [Елена Грицук] (https://htmlacademy.ru/profile/id199079).
 
 ---
 

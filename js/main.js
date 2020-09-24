@@ -94,13 +94,12 @@
 
   window.renderMapPin = (advert) => {
     const mapPinElement = templateMapPin.cloneNode(true);
-    const mapPinWidth = mapPinElement.clientWidth;
-    const mapPinHeight = mapPinElement.clientHeight;
+    const pin = document.querySelector(`.map__pin`);
 
     mapPinElement.querySelector(`img`).src = advert.author;
     mapPinElement.querySelector(`img`).alt = advert.offer.title;
-    mapPinElement.style.left = advert.location.x - mapPinWidth / 2 + `px`;
-    mapPinElement.style.top = advert.location.y - mapPinHeight + `px`;
+    mapPinElement.style.left = advert.location.x - pin.offsetWidth / 2 + `px`;
+    mapPinElement.style.top = advert.location.y - pin.offsetWidth + `px`;
     return mapPinElement;
   };
 })();

@@ -19,6 +19,7 @@ const PHOTOS = [
   `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
 ];
 const MAX_PRICE = 1000000;
+const MAX_COPACITY = 20;
 const CHECK_IN_OUT_TIME = [`12:00`, `13:00`, `14:00`];
 const ACCOMODATION_TYPE = [`palace`, `flat`, `house`, `bungalow`];
 const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
@@ -26,6 +27,8 @@ const DESCRIPTION = `Жилье расположено в историческо
 
 const map = document.querySelector(`.map`);
 const templateMapPin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const templateAdvert = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const mapFilters = document.querySelector(`.map__filters-container`);
 const mapPins = document.querySelector(`.map__pins`);
 
 
@@ -60,8 +63,8 @@ const getAdvertsList = (numberOfAdverts, maxPrice, checkInOutTime, type, titles,
         address: xLocation + `, ` + yLocation,
         price: getRandomInt(maxPrice),
         type: getRandomArrayElement(type),
-        rooms: getRandomInt(),
-        guests: getRandomInt(),
+        rooms: getRandomInt(MAX_COPACITY, 1),
+        guests: getRandomInt(MAX_COPACITY, 1),
         checkin: getRandomArrayElement(checkInOutTime),
         checkout: getRandomArrayElement(checkInOutTime),
         features: features.slice(0, getRandomInt((features.length + 1), 1)),
@@ -107,6 +110,103 @@ const renderNearbyMapPins = () => {
 };
 
 
-// отображает метки на карте
+// определяет тип жилья в объявлении
+const getAccomodationType = (advert) => {
+  let accomodationType;
+  if (advert.offer.type === `palace`) {
+    accomodationType = `Дворец`;
+  } else if (advert.offer.type === `flat`) {
+    accomodationType = `Квартира`;
+  } else if (advert.offer.type === `house`) {
+    accomodationType = `Дом`;
+  } else if (advert.offer.type === `bungalow`) {
+    accomodationType = `Бунгало`;
+  }
+  return accomodationType;
+};
+
+
+// определяет перечень услуг в объявлении
+const getFeaturesList = (element, advert) => {
+  const features = element.querySelectorAll(`.popup__feature`);
+
+  for (let feature of features) {
+    feature.style.display = `none`;
+  }
+
+  advert.offer.features.forEach((item) => {
+    for (let j = 0; j < features.length; j++) {
+      if (features[j].classList.contains(`popup__feature--${item}`)) {
+        features[j].style.display = ``;
+      }
+    }
+  });
+};
+
+
+// определяет вместимость жилья из объявления
+const getAccomodationCapacity = (advert) => {
+  let rooms = ` комната`;
+  if (advert.offer.rooms < 5 && advert.offer.rooms !== 1) {
+    rooms = ` комнаты`;
+  } else if (advert.offer.rooms >= 5) {
+    rooms = ` комнат`;
+  }
+
+  let guests = (advert.offer.guests === 1) ? ` гостя` : ` гостей`;
+
+  return advert.offer.rooms + rooms + ` для ` + advert.offer.guests + guests;
+};
+
+
+// формирует список фотография в объявлении
+const getPhotosList = (element, advert) => {
+  const photoList = element.querySelector(`.popup__photos`);
+  const photo = element.querySelector(`.popup__photo`);
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < advert.offer.photos.length; i++) {
+    let photoElement = photo.cloneNode(true);
+    photoElement.src = advert.offer.photos[i];
+    fragment.appendChild(photoElement);
+  }
+  photo.remove();
+  return photoList.appendChild(fragment);
+};
+
+
+// создает элемент: карточка объявления
+const renderAdvertCard = (advert) => {
+  const advertElement = templateAdvert.cloneNode(true);
+
+  advertElement.querySelector(`.popup__title`).textContent = advert.offer.title;
+  advertElement.querySelector(`.popup__text--address`).textContent = advert.offer.address;
+  advertElement.querySelector(`.popup__text--price`).textContent = `${advert.offer.price}₽/ночь`;
+  advertElement.querySelector(`.popup__type`).textContent = getAccomodationType(advert);
+  advertElement.querySelector(`.popup__text--capacity`).textContent = getAccomodationCapacity(advert);
+  advertElement.querySelector(`.popup__text--time`).textContent = `Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}`;
+  advertElement.querySelector(`.popup__description`).textContent = advert.offer.description;
+  advertElement.querySelector(`.popup__avatar`).src = advert.author;
+
+  getFeaturesList(advertElement, advert);
+  getPhotosList(advertElement, advert);
+
+  return advertElement;
+};
+
+
+// создает карточку для каждого объявления
+const renderAdvertCardsList = () => {
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < nearbyAdvertsList.length; i++) {
+    fragment.appendChild(renderAdvertCard(nearbyAdvertsList[i]));
+  }
+  return mapFilters.before(fragment);
+};
+
+
+// отображает метки и карточки объявлений
 map.classList.remove(`map--faded`);
 renderNearbyMapPins();
+renderAdvertCardsList();

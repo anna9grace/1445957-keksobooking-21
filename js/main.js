@@ -18,17 +18,17 @@ const PHOTOS = [
   `http://o0.github.io/assets/images/tokyo/hotel2.jpg`,
   `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
 ];
-const ACCOMODATION_TYPE = {
-  PALACE: `Дворец`,
-  FLAT: `Квартира`,
-  HOUSE: `Дом`,
-  BUNGALOW: `Бунгало`,
-};
 const MAX_PRICE = 1000000;
 const MAX_CAPACITY = 20;
 const CHECK_IN_OUT_TIME = [`12:00`, `13:00`, `14:00`];
 const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
 const DESCRIPTION = `Жилье расположено в историческом центре Города, всего в 100 метрах от Главной Достопримечательности. Поблизости проходят многочисленные маршруты общественного транспорта.`;
+const accomodationType = {
+  palace: `Дворец`,
+  flat: `Квартира`,
+  house: `Дом`,
+  bungalow: `Бунгало`,
+};
 
 const map = document.querySelector(`.map`);
 const templateMapPin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
@@ -67,7 +67,7 @@ const getAdvertsList = (numberOfAdverts, maxPrice, checkInOutTime, type, titles,
         title: titles[i],
         address: xLocation + `, ` + yLocation,
         price: getRandomInt(maxPrice),
-        type: getRandomArrayElement(type).toLowerCase(),
+        type: getRandomArrayElement(type),
         rooms: getRandomInt(MAX_CAPACITY, 1),
         guests: getRandomInt(MAX_CAPACITY, 1),
         checkin: getRandomArrayElement(checkInOutTime),
@@ -88,7 +88,7 @@ const getAdvertsList = (numberOfAdverts, maxPrice, checkInOutTime, type, titles,
 
 // создает массив объявлений
 const nearbyAdvertsList = getAdvertsList(ADVERTS_LIST_LENGTH, MAX_PRICE, CHECK_IN_OUT_TIME,
-    Object.keys(ACCOMODATION_TYPE), TITLES, DESCRIPTION, FEATURES, PHOTOS);
+    Object.keys(accomodationType), TITLES, DESCRIPTION, FEATURES, PHOTOS);
 
 
 // создает элемент: метка объявления на карте
@@ -188,7 +188,7 @@ const renderAdvertCard = (advert) => {
   }
 
   if (advert.offer.type) {
-    cardType.textContent = ACCOMODATION_TYPE[advert.offer.type.toUpperCase()];
+    cardType.textContent = accomodationType[advert.offer.type];
   } else {
     cardType.style.display = `none`;
   }

@@ -175,12 +175,10 @@ const renderAdvertCard = (advert) => {
   const cardPhotos = advertElement.querySelector(`.popup__photos`);
   const cardFeatures = advertElement.querySelector(`.popup__features`);
 
-  // обязательные поля
   advertElement.querySelector(`.popup__title`).textContent = advert.offer.title;
   advertElement.querySelector(`.popup__text--price`).textContent = `${advert.offer.price}₽/ночь`;
   advertElement.querySelector(`.popup__text--address`).textContent = advert.offer.address;
 
-  // необязательные поля
   if (advert.offer.description) {
     cardDescription.textContent = advert.offer.description;
   } else {
@@ -227,7 +225,66 @@ const renderAdvertCard = (advert) => {
 };
 
 
+
+// приводит страницу в начальное "неактивное" состояние
+
+const adForm = document.querySelector(`.ad-form`);
+const filtersForm = document.querySelector(`.map__filters`);
+
+for (let fieldset of adForm.children) {
+  fieldset.setAttribute(`disabled`, true);
+}
+
+for (let filter of filtersForm.children) {
+  filter.setAttribute(`disabled`, true);
+}
+
+
+
+// Активация страницы
+
+const mapPinMain = document.querySelector(`.map__pin--main`);
+
+const setActivePageState = () => {
+  map.classList.remove(`map--faded`);
+  adForm.classList.remove(`ad-form--disabled`);
+
+  for (let fieldset of adForm.children) {
+    fieldset.removeAttribute(`disabled`);
+  }
+
+  for (let filter of filtersForm.children) {
+    filter.removeAttribute(`disabled`);
+  }
+};
+
+mapPinMain.addEventListener(`mousedown`, (evt) => {
+  if (evt.button === 0) {
+    setActivePageState();
+  }
+});
+
+mapPinMain.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    setActivePageState();
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // отображает метки и карточки объявлений
-map.classList.remove(`map--faded`);
-renderNearbyMapPins();
-renderAdvertCard(nearbyAdvertsList[0]);
+// renderNearbyMapPins();
+// renderAdvertCard(nearbyAdvertsList[0]);
+
+

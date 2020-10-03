@@ -5,7 +5,7 @@ const CONTENT_BOTTOM_Y = 630;
 const ADVERTS_LIST_LENGTH = 8;
 const MAIN_PIN_SIZE = 65;
 const MAIN_PIN_POINTER_SIZE = 22;
-const MAX_CAPACITY = `100`;
+const MAX_CAPACITY = 100;
 const MAX_PRICE = 1000000;
 const TITLES = [
   `Уютное бунгало с видом на трассу`,
@@ -38,7 +38,7 @@ const templateMapPin = document.querySelector(`#pin`).content.querySelector(`.ma
 // const mapFilters = document.querySelector(`.map__filters-container`);
 const mapPins = document.querySelector(`.map__pins`);
 const adForm = document.querySelector(`.ad-form`);
-const filtersForm = document.querySelector(`.map__filters`);
+const formFields = document.querySelectorAll(`.map__features, .map__filter, .ad-form fieldset`);
 const mapPinMain = document.querySelector(`.map__pin--main`);
 const addressField = adForm.querySelector(`#address`);
 const roomOption = adForm.querySelector(`#room_number`);
@@ -47,15 +47,15 @@ const guestOption = adForm.querySelector(`#capacity`);
 
 // активация / деактивация интерактивных элементов
 
-const disableFormFields = (form) => {
-  for (let fields of form.children) {
-    fields.setAttribute(`disabled`, true);
+const disableFormFields = (fields) => {
+  for (let field of fields) {
+    field.setAttribute(`disabled`, `disabled`);
   }
 };
 
-const enableFormFields = (form) => {
-  for (let fields of form.children) {
-    fields.removeAttribute(`disabled`);
+const enableFormFields = (fields) => {
+  for (let field of fields) {
+    field.removeAttribute(`disabled`);
   }
 };
 
@@ -71,8 +71,7 @@ const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
 
 // приведение страницы в начальное неактивное состояние
 
-disableFormFields(adForm);
-disableFormFields(filtersForm);
+disableFormFields(formFields);
 renderPinCoordinates();
 
 
@@ -270,30 +269,24 @@ const setActivePageState = () => {
   map.classList.remove(`map--faded`);
   adForm.classList.remove(`ad-form--disabled`);
 
-  enableFormFields(adForm);
-  enableFormFields(filtersForm);
-  renderNearbyMapPins();
-};
-
-
-// взаимодействие с основной меткой
-
-const activatePage = () => {
-  setActivePageState();
+  enableFormFields(formFields);
   renderPinCoordinates(1, MAIN_PIN_POINTER_SIZE);
+  renderNearbyMapPins();
+  checkRoomsValidity();
+
   mapPinMain.removeEventListener(`mousedown`, onMainPinClick);
   mapPinMain.removeEventListener(`keydown`, onMainPinKeydown);
 };
 
 const onMainPinClick = (evt) => {
   if (evt.button === 0) {
-    activatePage();
+    setActivePageState();
   }
 };
 
 const onMainPinKeydown = (evt) => {
   if (evt.key === `Enter`) {
-    activatePage();
+    setActivePageState();
   }
 };
 
@@ -304,16 +297,16 @@ mapPinMain.addEventListener(`keydown`, onMainPinKeydown);
 // валидация полей количества комнат и гостей
 
 const checkRoomsValidity = () => {
-  let rooms = roomOption.value;
-  let guests = guestOption.value;
+  let rooms = +roomOption.value;
+  let guests = +guestOption.value;
 
-  if (rooms === MAX_CAPACITY && guests !== `0`) {
+  if (rooms === MAX_CAPACITY && guests !== 0) {
     guestOption.setCustomValidity(`Это жилье не для гостей. Выберите подходящий вариант`);
-  } else if (rooms !== MAX_CAPACITY && guests === `0`) {
+  } else if (rooms !== MAX_CAPACITY && guests === 0) {
     guestOption.setCustomValidity(`Выберите количество гостей`);
-  } else if (rooms === `2` && guests > `2`) {
+  } else if (rooms === 2 && guests > 2) {
     guestOption.setCustomValidity(`Подходит максимум для двух гостей. Выберите другой вариант`);
-  } else if (rooms === `1` && guests > `1`) {
+  } else if (rooms === 1 && guests > 1) {
     guestOption.setCustomValidity(`Подходит только для одного гостя. Выберите подходящий вариант`);
   } else {
     guestOption.setCustomValidity(``);

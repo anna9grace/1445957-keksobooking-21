@@ -7,6 +7,8 @@ const MAIN_PIN_SIZE = 65;
 const MAIN_PIN_POINTER_SIZE = 22;
 const MAX_CAPACITY = 100;
 const MAX_PRICE = 1000000;
+const MAX_TITLE = 100;
+const MIN_TITLE = 20;
 const TITLES = [
   `Уютное бунгало с видом на трассу`,
   `Небольшая чистая квартира`,
@@ -31,6 +33,12 @@ const accomodationType = {
   house: `Дом`,
   bungalow: `Бунгало`,
 };
+const minPrice = {
+  palace: 10000,
+  flat: 1000,
+  house: 5000,
+  bungalow: 0,
+};
 
 const map = document.querySelector(`.map`);
 const templateMapPin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
@@ -43,9 +51,14 @@ const mapPinMain = document.querySelector(`.map__pin--main`);
 const addressField = adForm.querySelector(`#address`);
 const roomOption = adForm.querySelector(`#room_number`);
 const guestOption = adForm.querySelector(`#capacity`);
+const titleField = adForm.querySelector(`#title`);
+const priceField = adForm.querySelector(`#price`);
+const typeOption = adForm.querySelector(`#type`);
+const timeInOption = adForm.querySelector(`#timein`);
+const timeOutOption = adForm.querySelector(`#timeout`);
 
 
-// активация / деактивация интерактивных элементов
+// activate / deactivate interactive elements
 
 const disableFormFields = (fields) => {
   for (let field of fields) {
@@ -60,7 +73,7 @@ const enableFormFields = (fields) => {
 };
 
 
-// вычисление координат метки для адреса
+// calculate map-pin's coordinates to fill address field
 
 const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
   const mainPinX = mapPinMain.offsetLeft + MAIN_PIN_SIZE * 0.5;
@@ -68,14 +81,12 @@ const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
   addressField.value = Math.round(mainPinX) + `, ` + Math.round(mainPinY);
 };
 
-
-// приведение страницы в начальное неактивное состояние
-
 disableFormFields(formFields);
 renderPinCoordinates();
 
 
-// поиск случайного числа
+// get random number
+
 const getRandomInt = (max = 100, min = 0) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -83,14 +94,16 @@ const getRandomInt = (max = 100, min = 0) => {
 };
 
 
-// поиск случайного элемента массив
+// get random array's element
+
 const getRandomArrayElement = (arr) => {
   const randomElement = Math.floor(Math.random() * arr.length);
   return arr[randomElement];
 };
 
 
-// объявляет функцию создания массива объявлений
+// function to create an array of adverts
+
 const getAdvertsList = (numberOfAdverts, maxPrice, checkInOutTime, type, titles, fullDescription, features, photos) => {
   const adverts = [];
 
@@ -124,12 +137,14 @@ const getAdvertsList = (numberOfAdverts, maxPrice, checkInOutTime, type, titles,
 };
 
 
-// создает массив объявлений
+// create an array of adverts
+
 const nearbyAdvertsList = getAdvertsList(ADVERTS_LIST_LENGTH, MAX_PRICE, CHECK_IN_OUT_TIMES,
     Object.keys(accomodationType), TITLES, DESCRIPTION, FEATURES, PHOTOS);
 
 
-// создает элемент: метка объявления на карте
+// create an element: advert's map-pin
+
 const renderMapPin = (advert) => {
   const mapPinElement = templateMapPin.cloneNode(true);
   const pin = document.querySelector(`.map__pin`);
@@ -142,7 +157,8 @@ const renderMapPin = (advert) => {
 };
 
 
-// создает метки для каждого объявления
+// create map-pins for existing adverts
+
 const renderNearbyMapPins = () => {
   const fragment = document.createDocumentFragment();
 
@@ -153,7 +169,8 @@ const renderNearbyMapPins = () => {
 };
 
 
-// определяет перечень услуг в объявлении
+// fill list of features for a current card
+
 const renderFeatures = (element, advert) => {
   const features = element.querySelectorAll(`.popup__feature`);
 
@@ -171,7 +188,8 @@ const renderFeatures = (element, advert) => {
 };
 
 
-// определяет вместимость жилья из объявления
+// fill capacity characteristics for a current card
+
 const getAccomodationCapacity = (advert) => {
   let rooms = ` комната`;
   if (advert.offer.rooms < 5 && advert.offer.rooms !== 1) {
@@ -186,7 +204,8 @@ const getAccomodationCapacity = (advert) => {
 };
 
 
-// формирует список фотография в объявлении
+// fill list of photos for a current card
+
 const renderPhotos = (element, advert) => {
   const photoList = element.querySelector(`.popup__photos`);
   const photo = element.querySelector(`.popup__photo`);
@@ -202,7 +221,8 @@ const renderPhotos = (element, advert) => {
 };
 
 
-// создает элемент: карточка объявления
+// create an element: advert card
+
 const renderAdvertCard = (advert) => {
   const advertElement = templateAdvert.cloneNode(true);
   const cardDescription = advertElement.querySelector(`.popup__description`);
@@ -263,7 +283,7 @@ const renderAdvertCard = (advert) => {
 };
 
 
-// закрывает открытую карточку объявления
+// close advert card
 
 const closeAdvertCard = () => {
   let card = map.querySelector(`.map__card`);
@@ -280,7 +300,7 @@ const onPopupEscPress = (evt) => {
 };
 
 
-// открывает карточку объявления
+// open advert card
 
 const openAdvertCard = (target) => {
   let mapPins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
@@ -298,7 +318,7 @@ const openAdvertCard = (target) => {
 };
 
 
-// обработчик нажатия на метку объявления
+// handle a click event on advert's map-pin
 
 const onMapPinClick = (evt) => {
   let pinTarget = evt.target.closest(`.map__pin`);
@@ -312,7 +332,7 @@ const onMapPinClick = (evt) => {
 };
 
 
-// активация страницы
+// activate page
 
 const setActivePageState = () => {
   map.classList.remove(`map--faded`);
@@ -322,6 +342,8 @@ const setActivePageState = () => {
   renderPinCoordinates(1, MAIN_PIN_POINTER_SIZE);
   renderNearbyMapPins();
   checkRoomsValidity();
+  checkTitleValidity();
+  checkPriceValidity();
 
   mapPinMain.removeEventListener(`mousedown`, onMainPinClick);
   mapPinMain.removeEventListener(`keydown`, onMainPinKeydown);
@@ -345,7 +367,7 @@ mapPinMain.addEventListener(`mousedown`, onMainPinClick);
 mapPinMain.addEventListener(`keydown`, onMainPinKeydown);
 
 
-// валидация полей количества комнат и гостей
+// validate rooms' capacity
 
 const checkRoomsValidity = () => {
   let rooms = +roomOption.value;
@@ -365,5 +387,53 @@ const checkRoomsValidity = () => {
   guestOption.reportValidity();
 };
 
+
+// validate title
+
+const checkTitleValidity = () => {
+  let titleLength = titleField.value.length;
+
+  if (titleLength === 0) {
+    titleField.setCustomValidity(`Введите заголовок объявления`);
+  } else if (titleLength < MIN_TITLE) {
+    titleField.setCustomValidity(`Слишком короткий заголовок. Введите еще ${MIN_TITLE - titleLength} симв.`);
+  } else if (titleLength > MAX_TITLE) {
+    titleField.setCustomValidity(`Слишком длинный заголовок. Уберите ${titleLength - MAX_TITLE} симв.`);
+  } else {
+    titleField.setCustomValidity(``);
+  }
+  titleField.reportValidity();
+};
+
+
+// validate price per night
+
+const checkPriceValidity = () => {
+  let price = priceField.value;
+  let type = typeOption.value;
+  priceField.placeholder = minPrice[type];
+
+  if (!price) {
+    priceField.setCustomValidity(`Укажите цену за ночь`);
+  } else if (price < minPrice[type]) {
+    priceField.setCustomValidity(`Цена для жилья типа "${accomodationType[type]}" не может быть меньше ${minPrice[type]} руб. за ночь`);
+  } else if (price > MAX_PRICE) {
+    priceField.setCustomValidity(`Цена не может быть выше ${MAX_PRICE} руб. за ночь`);
+  } else {
+    priceField.setCustomValidity(``);
+  }
+  priceField.reportValidity();
+};
+
+
 roomOption.addEventListener(`change`, checkRoomsValidity);
 guestOption.addEventListener(`change`, checkRoomsValidity);
+titleField.addEventListener(`input`, checkTitleValidity);
+priceField.addEventListener(`input`, checkPriceValidity);
+typeOption.addEventListener(`change`, checkPriceValidity);
+timeInOption.addEventListener(`change`, () => {
+  timeOutOption.value = timeInOption.value;
+});
+timeOutOption.addEventListener(`change`, () => {
+  timeInOption.value = timeOutOption.value;
+});

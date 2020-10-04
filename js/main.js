@@ -269,14 +269,38 @@ const closeAdvertCard = () => {
   let card = map.querySelector(`.map__card`);
   if (card) {
     card.remove();
+    document.removeEventListener(`keydown`, onPopupEscPress);
+  }
+};
+
+const onPopupEscPress = (evt) => {
+  if (evt.key === `Escape`) {
+    closeAdvertCard();
   }
 };
 
 
-// открытие карточки объявления по нажатию на его метку
+// открывает карточку объявления
+
+const openAdvertCard = (target) => {
+  let mapPins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
+
+  for (let i = 0; i < mapPins.length; i++) {
+    if (mapPins[i] === target) {
+      renderAdvertCard(nearbyAdvertsList[i]);
+    }
+  }
+
+  document.addEventListener(`keydown`, onPopupEscPress);
+  map.querySelector(`.popup__close`).addEventListener(`click`, () => {
+    closeAdvertCard();
+  });
+};
+
+
+// обработчик нажатия на метку объявления
 
 const onMapPinClick = (evt) => {
-  let mapPins = document.querySelectorAll(`.map__pin:not(:first-of-type)`);
   let pinTarget = evt.target.closest(`.map__pin`);
 
   if (!pinTarget || pinTarget.classList.contains(`map__pin--main`)) {
@@ -284,17 +308,11 @@ const onMapPinClick = (evt) => {
   }
 
   closeAdvertCard();
-  for (let i = 0; i < mapPins.length; i++) {
-    if (mapPins[i] === pinTarget) {
-      renderAdvertCard(nearbyAdvertsList[i]);
-    }
-  }
+  openAdvertCard(pinTarget);
 };
 
 
-
-
-// Активация страницы
+// активация страницы
 
 const setActivePageState = () => {
   map.classList.remove(`map--faded`);
@@ -349,11 +367,3 @@ const checkRoomsValidity = () => {
 
 roomOption.addEventListener(`change`, checkRoomsValidity);
 guestOption.addEventListener(`change`, checkRoomsValidity);
-
-
-
-
-
-
-// Добавьте возможность закрытия карточки с подробной информацией по нажатию клавиши Esc и клике по иконке закрытия;
-

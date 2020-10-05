@@ -31,21 +31,31 @@ const accomodationType = {
   house: `Дом`,
   bungalow: `Бунгало`,
 };
+const minPrice = {
+  palace: 10000,
+  flat: 1000,
+  house: 5000,
+  bungalow: 0,
+};
 
 const map = document.querySelector(`.map`);
 const templateMapPin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-// const templateAdvert = document.querySelector(`#card`).content.querySelector(`.map__card`);
-// const mapFilters = document.querySelector(`.map__filters-container`);
-const mapPins = document.querySelector(`.map__pins`);
+const templateAdvert = document.querySelector(`#card`).content.querySelector(`.map__card`);
+const mapFilters = document.querySelector(`.map__filters-container`);
+const mapPinsList = document.querySelector(`.map__pins`);
 const adForm = document.querySelector(`.ad-form`);
 const formFields = document.querySelectorAll(`.map__features, .map__filter, .ad-form fieldset`);
 const mapPinMain = document.querySelector(`.map__pin--main`);
 const addressField = adForm.querySelector(`#address`);
 const roomOption = adForm.querySelector(`#room_number`);
 const guestOption = adForm.querySelector(`#capacity`);
+const priceField = adForm.querySelector(`#price`);
+const typeOption = adForm.querySelector(`#type`);
+const timeInOption = adForm.querySelector(`#timein`);
+const timeOutOption = adForm.querySelector(`#timeout`);
 
 
-// активация / деактивация интерактивных элементов
+// activate / deactivate interactive elements
 
 const disableFormFields = (fields) => {
   for (let field of fields) {
@@ -60,7 +70,7 @@ const enableFormFields = (fields) => {
 };
 
 
-// вычисление координат метки для адреса
+// calculate map-pin's coordinates to fill address field
 
 const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
   const mainPinX = mapPinMain.offsetLeft + MAIN_PIN_SIZE * 0.5;
@@ -68,14 +78,12 @@ const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
   addressField.value = Math.round(mainPinX) + `, ` + Math.round(mainPinY);
 };
 
-
-// приведение страницы в начальное неактивное состояние
-
 disableFormFields(formFields);
 renderPinCoordinates();
 
 
-// поиск случайного числа
+// get random number
+
 const getRandomInt = (max = 100, min = 0) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -83,14 +91,16 @@ const getRandomInt = (max = 100, min = 0) => {
 };
 
 
-// поиск случайного элемента массив
+// get random array's element
+
 const getRandomArrayElement = (arr) => {
   const randomElement = Math.floor(Math.random() * arr.length);
   return arr[randomElement];
 };
 
 
-// объявляет функцию создания массива объявлений
+// function to create an array of adverts
+
 const getAdvertsList = (numberOfAdverts, maxPrice, checkInOutTime, type, titles, fullDescription, features, photos) => {
   const adverts = [];
 
@@ -124,12 +134,14 @@ const getAdvertsList = (numberOfAdverts, maxPrice, checkInOutTime, type, titles,
 };
 
 
-// создает массив объявлений
+// create an array of adverts
+
 const nearbyAdvertsList = getAdvertsList(ADVERTS_LIST_LENGTH, MAX_PRICE, CHECK_IN_OUT_TIMES,
     Object.keys(accomodationType), TITLES, DESCRIPTION, FEATURES, PHOTOS);
 
 
-// создает элемент: метка объявления на карте
+// create an element: advert's map-pin
+
 const renderMapPin = (advert) => {
   const mapPinElement = templateMapPin.cloneNode(true);
   const pin = document.querySelector(`.map__pin`);
@@ -142,128 +154,182 @@ const renderMapPin = (advert) => {
 };
 
 
-// создает метки для каждого объявления
+// create map-pins for existing adverts
+
 const renderNearbyMapPins = () => {
   const fragment = document.createDocumentFragment();
 
   for (let i = 0; i < nearbyAdvertsList.length; i++) {
     fragment.appendChild(renderMapPin(nearbyAdvertsList[i]));
   }
-  return mapPins.appendChild(fragment);
+  return mapPinsList.appendChild(fragment);
 };
 
 
-// // определяет перечень услуг в объявлении
-// const renderFeatures = (element, advert) => {
-//   const features = element.querySelectorAll(`.popup__feature`);
+// fill list of features for a current card
 
-//   for (let feature of features) {
-//     feature.style.display = `none`;
-//   }
+const renderFeatures = (element, advert) => {
+  const features = element.querySelectorAll(`.popup__feature`);
 
-//   advert.offer.features.forEach((item) => {
-//     for (let j = 0; j < features.length; j++) {
-//       if (features[j].classList.contains(`popup__feature--${item}`)) {
-//         features[j].style.display = ``;
-//       }
-//     }
-//   });
-// };
+  for (let feature of features) {
+    feature.style.display = `none`;
+  }
 
-
-// // определяет вместимость жилья из объявления
-// const getAccomodationCapacity = (advert) => {
-//   let rooms = ` комната`;
-//   if (advert.offer.rooms < 5 && advert.offer.rooms !== 1) {
-//     rooms = ` комнаты`;
-//   } else if (advert.offer.rooms >= 5) {
-//     rooms = ` комнат`;
-//   }
-
-//   let guests = (advert.offer.guests === 1) ? ` гостя` : ` гостей`;
-
-//   return advert.offer.rooms + rooms + ` для ` + advert.offer.guests + guests;
-// };
+  advert.offer.features.forEach((item) => {
+    for (let j = 0; j < features.length; j++) {
+      if (features[j].classList.contains(`popup__feature--${item}`)) {
+        features[j].style.display = ``;
+      }
+    }
+  });
+};
 
 
-// // формирует список фотография в объявлении
-// const renderPhotos = (element, advert) => {
-//   const photoList = element.querySelector(`.popup__photos`);
-//   const photo = element.querySelector(`.popup__photo`);
-//   const fragment = document.createDocumentFragment();
+// fill capacity characteristics for a current card
 
-//   for (let i = 0; i < advert.offer.photos.length; i++) {
-//     let photoElement = photo.cloneNode(true);
-//     photoElement.src = advert.offer.photos[i];
-//     fragment.appendChild(photoElement);
-//   }
-//   photo.remove();
-//   return photoList.appendChild(fragment);
-// };
+const getAccomodationCapacity = (advert) => {
+  let rooms = ` комната`;
+  if (advert.offer.rooms < 5 && advert.offer.rooms !== 1) {
+    rooms = ` комнаты`;
+  } else if (advert.offer.rooms >= 5) {
+    rooms = ` комнат`;
+  }
 
+  let guests = (advert.offer.guests === 1) ? ` гостя` : ` гостей`;
 
-// // создает элемент: карточка объявления
-// const renderAdvertCard = (advert) => {
-//   const advertElement = templateAdvert.cloneNode(true);
-//   const cardDescription = advertElement.querySelector(`.popup__description`);
-//   const cardType = advertElement.querySelector(`.popup__type`);
-//   const cardTime = advertElement.querySelector(`.popup__text--time`);
-//   const cardCapacity = advertElement.querySelector(`.popup__text--capacity`);
-//   const cardAvatar = advertElement.querySelector(`.popup__avatar`);
-//   const cardPhotos = advertElement.querySelector(`.popup__photos`);
-//   const cardFeatures = advertElement.querySelector(`.popup__features`);
-
-//   advertElement.querySelector(`.popup__title`).textContent = advert.offer.title;
-//   advertElement.querySelector(`.popup__text--price`).textContent = `${advert.offer.price}₽/ночь`;
-//   advertElement.querySelector(`.popup__text--address`).textContent = advert.offer.address;
-
-//   if (advert.offer.description) {
-//     cardDescription.textContent = advert.offer.description;
-//   } else {
-//     cardDescription.style.display = `none`;
-//   }
-
-//   if (advert.offer.type) {
-//     cardType.textContent = accomodationType[advert.offer.type];
-//   } else {
-//     cardType.style.display = `none`;
-//   }
-
-//   if (advert.offer.checkin) {
-//     cardTime.textContent = `Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}`;
-//   } else {
-//     cardTime.style.display = `none`;
-//   }
-
-//   if (advert.offer.rooms) {
-//     cardCapacity.textContent = getAccomodationCapacity(advert);
-//   } else {
-//     cardCapacity.style.display = `none`;
-//   }
-
-//   if (advert.author) {
-//     cardAvatar.src = advert.author;
-//   } else {
-//     cardAvatar.style.display = `none`;
-//   }
-
-//   if (advert.offer.photos.length > 0) {
-//     renderPhotos(advertElement, advert);
-//   } else {
-//     cardPhotos.style.display = `none`;
-//   }
-
-//   if (advert.offer.features.length > 0) {
-//     renderFeatures(advertElement, advert);
-//   } else {
-//     cardFeatures.style.display = `none`;
-//   }
-
-//   return mapFilters.before(advertElement);
-// };
+  return advert.offer.rooms + rooms + ` для ` + advert.offer.guests + guests;
+};
 
 
-// Активация страницы
+// fill list of photos for a current card
+
+const renderPhotos = (element, advert) => {
+  const photoList = element.querySelector(`.popup__photos`);
+  const photo = element.querySelector(`.popup__photo`);
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < advert.offer.photos.length; i++) {
+    let photoElement = photo.cloneNode(true);
+    photoElement.src = advert.offer.photos[i];
+    fragment.appendChild(photoElement);
+  }
+  photo.remove();
+  return photoList.appendChild(fragment);
+};
+
+
+// create an element: advert card
+
+const renderAdvertCard = (advert) => {
+  const advertElement = templateAdvert.cloneNode(true);
+  const cardDescription = advertElement.querySelector(`.popup__description`);
+  const cardType = advertElement.querySelector(`.popup__type`);
+  const cardTime = advertElement.querySelector(`.popup__text--time`);
+  const cardCapacity = advertElement.querySelector(`.popup__text--capacity`);
+  const cardAvatar = advertElement.querySelector(`.popup__avatar`);
+  const cardPhotos = advertElement.querySelector(`.popup__photos`);
+  const cardFeatures = advertElement.querySelector(`.popup__features`);
+
+  advertElement.querySelector(`.popup__title`).textContent = advert.offer.title;
+  advertElement.querySelector(`.popup__text--price`).textContent = `${advert.offer.price}₽/ночь`;
+  advertElement.querySelector(`.popup__text--address`).textContent = advert.offer.address;
+
+  if (advert.offer.description) {
+    cardDescription.textContent = advert.offer.description;
+  } else {
+    cardDescription.style.display = `none`;
+  }
+
+  if (advert.offer.type) {
+    cardType.textContent = accomodationType[advert.offer.type];
+  } else {
+    cardType.style.display = `none`;
+  }
+
+  if (advert.offer.checkin) {
+    cardTime.textContent = `Заезд после ${advert.offer.checkin}, выезд до ${advert.offer.checkout}`;
+  } else {
+    cardTime.style.display = `none`;
+  }
+
+  if (advert.offer.rooms) {
+    cardCapacity.textContent = getAccomodationCapacity(advert);
+  } else {
+    cardCapacity.style.display = `none`;
+  }
+
+  if (advert.author) {
+    cardAvatar.src = advert.author;
+  } else {
+    cardAvatar.style.display = `none`;
+  }
+
+  if (advert.offer.photos.length > 0) {
+    renderPhotos(advertElement, advert);
+  } else {
+    cardPhotos.style.display = `none`;
+  }
+
+  if (advert.offer.features.length > 0) {
+    renderFeatures(advertElement, advert);
+  } else {
+    cardFeatures.style.display = `none`;
+  }
+
+  return mapFilters.before(advertElement);
+};
+
+
+// close advert card
+
+const closeAdvertCard = () => {
+  let card = map.querySelector(`.map__card`);
+  if (card) {
+    card.remove();
+    document.removeEventListener(`keydown`, onPopupEscPress);
+  }
+};
+
+const onPopupEscPress = (evt) => {
+  if (evt.key === `Escape`) {
+    closeAdvertCard();
+  }
+};
+
+
+// open advert card
+
+const openAdvertCard = (target) => {
+  let mapPins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
+
+  for (let i = 0; i < mapPins.length; i++) {
+    if (mapPins[i] === target) {
+      renderAdvertCard(nearbyAdvertsList[i]);
+    }
+  }
+
+  document.addEventListener(`keydown`, onPopupEscPress);
+  map.querySelector(`.popup__close`).addEventListener(`click`, () => {
+    closeAdvertCard();
+  });
+};
+
+
+// handle a click event on advert's map-pin
+
+const onMapPinClick = (evt) => {
+  let pinTarget = evt.target.closest(`.map__pin`);
+
+  if (!pinTarget || pinTarget.classList.contains(`map__pin--main`)) {
+    return;
+  }
+
+  closeAdvertCard();
+  openAdvertCard(pinTarget);
+};
+
+
+// activate page
 
 const setActivePageState = () => {
   map.classList.remove(`map--faded`);
@@ -276,7 +342,9 @@ const setActivePageState = () => {
 
   mapPinMain.removeEventListener(`mousedown`, onMainPinClick);
   mapPinMain.removeEventListener(`keydown`, onMainPinKeydown);
+  mapPinsList.addEventListener(`click`, onMapPinClick);
 };
+
 
 const onMainPinClick = (evt) => {
   if (evt.button === 0) {
@@ -294,7 +362,7 @@ mapPinMain.addEventListener(`mousedown`, onMainPinClick);
 mapPinMain.addEventListener(`keydown`, onMainPinKeydown);
 
 
-// валидация полей количества комнат и гостей
+// validate rooms' capacity
 
 const checkRoomsValidity = () => {
   let rooms = +roomOption.value;
@@ -314,9 +382,22 @@ const checkRoomsValidity = () => {
   guestOption.reportValidity();
 };
 
+
+// validate price per night
+
+const checkPriceValidity = () => {
+  let type = typeOption.value;
+  priceField.min = minPrice[type];
+  priceField.placeholder = minPrice[type];
+};
+
+
 roomOption.addEventListener(`change`, checkRoomsValidity);
 guestOption.addEventListener(`change`, checkRoomsValidity);
-
-
-// // отображает метки и карточки объявлений
-// renderAdvertCard(nearbyAdvertsList[0]);
+typeOption.addEventListener(`change`, checkPriceValidity);
+timeInOption.addEventListener(`change`, () => {
+  timeOutOption.value = timeInOption.value;
+});
+timeOutOption.addEventListener(`change`, () => {
+  timeInOption.value = timeOutOption.value;
+});

@@ -7,8 +7,6 @@ const MAIN_PIN_SIZE = 65;
 const MAIN_PIN_POINTER_SIZE = 22;
 const MAX_CAPACITY = 100;
 const MAX_PRICE = 1000000;
-const MAX_TITLE = 100;
-const MIN_TITLE = 20;
 const TITLES = [
   `Уютное бунгало с видом на трассу`,
   `Небольшая чистая квартира`,
@@ -51,7 +49,6 @@ const mapPinMain = document.querySelector(`.map__pin--main`);
 const addressField = adForm.querySelector(`#address`);
 const roomOption = adForm.querySelector(`#room_number`);
 const guestOption = adForm.querySelector(`#capacity`);
-const titleField = adForm.querySelector(`#title`);
 const priceField = adForm.querySelector(`#price`);
 const typeOption = adForm.querySelector(`#type`);
 const timeInOption = adForm.querySelector(`#timein`);
@@ -342,8 +339,6 @@ const setActivePageState = () => {
   renderPinCoordinates(1, MAIN_PIN_POINTER_SIZE);
   renderNearbyMapPins();
   checkRoomsValidity();
-  checkTitleValidity();
-  checkPriceValidity();
 
   mapPinMain.removeEventListener(`mousedown`, onMainPinClick);
   mapPinMain.removeEventListener(`keydown`, onMainPinKeydown);
@@ -388,48 +383,17 @@ const checkRoomsValidity = () => {
 };
 
 
-// validate title
-
-const checkTitleValidity = () => {
-  let titleLength = titleField.value.length;
-
-  if (titleLength === 0) {
-    titleField.setCustomValidity(`Введите заголовок объявления`);
-  } else if (titleLength < MIN_TITLE) {
-    titleField.setCustomValidity(`Слишком короткий заголовок. Введите еще ${MIN_TITLE - titleLength} симв.`);
-  } else if (titleLength > MAX_TITLE) {
-    titleField.setCustomValidity(`Слишком длинный заголовок. Уберите ${titleLength - MAX_TITLE} симв.`);
-  } else {
-    titleField.setCustomValidity(``);
-  }
-  titleField.reportValidity();
-};
-
-
 // validate price per night
 
 const checkPriceValidity = () => {
-  let price = priceField.value;
   let type = typeOption.value;
+  priceField.min = minPrice[type];
   priceField.placeholder = minPrice[type];
-
-  if (!price) {
-    priceField.setCustomValidity(`Укажите цену за ночь`);
-  } else if (price < minPrice[type]) {
-    priceField.setCustomValidity(`Цена для жилья типа "${accomodationType[type]}" не может быть меньше ${minPrice[type]} руб. за ночь`);
-  } else if (price > MAX_PRICE) {
-    priceField.setCustomValidity(`Цена не может быть выше ${MAX_PRICE} руб. за ночь`);
-  } else {
-    priceField.setCustomValidity(``);
-  }
-  priceField.reportValidity();
 };
 
 
 roomOption.addEventListener(`change`, checkRoomsValidity);
 guestOption.addEventListener(`change`, checkRoomsValidity);
-titleField.addEventListener(`input`, checkTitleValidity);
-priceField.addEventListener(`input`, checkPriceValidity);
 typeOption.addEventListener(`change`, checkPriceValidity);
 timeInOption.addEventListener(`change`, () => {
   timeOutOption.value = timeInOption.value;

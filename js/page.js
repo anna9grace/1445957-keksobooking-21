@@ -22,9 +22,6 @@
     }
   };
 
-  disableFormFields(formFields);
-  window.map.renderPinCoordinates();
-
   // activate page
 
   const setActivePageState = () => {
@@ -43,5 +40,6 @@
 
   window.page = {
     setActivePageState,
+    disableFormFields,
   };
 })();

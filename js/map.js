@@ -5,14 +5,13 @@
   const map = document.querySelector(`.map`);
   const mapPinMain = document.querySelector(`.map__pin--main`);
   const addressField = document.querySelector(`#address`);
-  const MainPinCoords = {};
 
   // calculate main pin's coordinates
 
   const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
-    MainPinCoords.X = mapPinMain.offsetLeft + MAIN_PIN_SIZE * 0.5;
-    MainPinCoords.Y = mapPinMain.offsetTop + MAIN_PIN_SIZE * pinHeightScale + pointerSize;
-    addressField.value = Math.round(MainPinCoords.X) + `, ` + Math.round(MainPinCoords.Y);
+    const mainPinX = mapPinMain.offsetLeft + MAIN_PIN_SIZE * 0.5;
+    const mainPinY = mapPinMain.offsetTop + MAIN_PIN_SIZE * pinHeightScale + pointerSize;
+    addressField.value = Math.round(mainPinX) + `, ` + Math.round(mainPinY);
   };
 
   // handle a click event on main map-pin

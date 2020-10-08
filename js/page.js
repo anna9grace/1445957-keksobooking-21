@@ -2,7 +2,7 @@
 
 (function () {
   const formFields = document.querySelectorAll(`.map__features, .map__filter, .ad-form fieldset`);
-  const MAIN_PIN_POINTER_SIZE = 22;
+
   const map = document.querySelector(`.map`);
   const adForm = document.querySelector(`.ad-form`);
   const mapPinMain = document.querySelector(`.map__pin--main`);
@@ -29,7 +29,7 @@
     adForm.classList.remove(`ad-form--disabled`);
 
     enableFormFields(formFields);
-    window.map.renderPinCoordinates(1, MAIN_PIN_POINTER_SIZE);
+    window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
     window.pin.renderNearbyMapPins();
     window.form.checkRoomsValidity();
 

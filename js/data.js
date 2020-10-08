@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  const CONTENT_TOP_Y = 130;
-  const CONTENT_BOTTOM_Y = 630;
   const ADVERTS_LIST_LENGTH = 8;
   const MAX_PRICE = 1000000;
   const CHECK_IN_OUT_TIMES = [`12:00`, `13:00`, `14:00`];
@@ -34,7 +32,7 @@
     for (let i = 0; i < numberOfAdverts; i++) {
       let j = (i < 9) ? (`0` + (i + 1)) : (i + 1);
       let xLocation = window.util.getRandomInt(map.clientWidth);
-      let yLocation = window.util.getRandomInt(CONTENT_TOP_Y, CONTENT_BOTTOM_Y);
+      let yLocation = window.util.getRandomInt(130, 630);
 
       adverts[i] = {
         author: `img/avatars/user${j}.png`,

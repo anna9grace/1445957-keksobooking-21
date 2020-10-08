@@ -1,17 +1,19 @@
 'use strict';
 
 (function () {
-  const MAIN_PIN_SIZE = 65;
   const map = document.querySelector(`.map`);
   const mapPinMain = document.querySelector(`.map__pin--main`);
   const addressField = document.querySelector(`#address`);
 
+
   // calculate main pin's coordinates
 
   const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
-    const mainPinX = mapPinMain.offsetLeft + MAIN_PIN_SIZE * 0.5;
-    const mainPinY = mapPinMain.offsetTop + MAIN_PIN_SIZE * pinHeightScale + pointerSize;
-    addressField.value = Math.round(mainPinX) + `, ` + Math.round(mainPinY);
+    const addressCoordinates = {};
+    addressCoordinates.x = Math.ceil(mapPinMain.offsetLeft + window.constants.MAIN_PIN_SIZE * 0.5);
+    addressCoordinates.y = Math.floor(mapPinMain.offsetTop + window.constants.MAIN_PIN_SIZE * pinHeightScale + pointerSize);
+    addressField.value = addressCoordinates.x + `, ` + addressCoordinates.y;
+    return addressCoordinates;
   };
 
   // handle a click event on main map-pin

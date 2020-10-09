@@ -57,10 +57,13 @@
       window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
     };
 
-    map.addEventListener(`mousemove`, onMouseMove);
-    document.addEventListener(`mouseup`, (upEvt) => {
+    const onMouseUp = (upEvt) => {
       upEvt.preventDefault();
-      map.removeEventListener(`mousemove`, onMouseMove);
-    });
+      document.removeEventListener(`mousemove`, onMouseMove);
+      document.removeEventListener(`mouseup`, onMouseUp);
+    };
+
+    document.addEventListener(`mousemove`, onMouseMove);
+    document.addEventListener(`mouseup`, onMouseUp);
   });
 })();

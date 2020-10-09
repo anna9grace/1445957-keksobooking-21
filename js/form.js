@@ -33,7 +33,6 @@
     } else {
       guestOption.setCustomValidity(``);
     }
-    guestOption.reportValidity();
   };
 
   // validate price per night

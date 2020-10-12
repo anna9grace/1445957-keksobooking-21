@@ -94,8 +94,8 @@
       cardCapacity.style.display = `none`;
     }
 
-    if (advert.author) {
-      cardAvatar.src = advert.author;
+    if (advert.author.avatar) {
+      cardAvatar.src = advert.author.avatar;
     } else {
       cardAvatar.style.display = `none`;
     }

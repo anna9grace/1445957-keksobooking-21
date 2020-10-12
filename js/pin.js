@@ -12,7 +12,7 @@
   const renderMapPin = (advert) => {
     const mapPinElement = templateMapPin.cloneNode(true);
 
-    mapPinElement.querySelector(`img`).src = advert.author;
+    mapPinElement.querySelector(`img`).src = advert.author.avatar;
     mapPinElement.querySelector(`img`).alt = advert.offer.title;
     mapPinElement.style.left = advert.location.x - MAP_PIN_WIDTH / 2 + `px`;
     mapPinElement.style.top = advert.location.y - MAP_PIN_HEIGHT + `px`;
@@ -21,11 +21,11 @@
 
   // create map-pins for existing adverts
 
-  const renderNearbyMapPins = () => {
+  const renderNearbyMapPins = (adverts) => {
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < window.data.nearbyAdvertsList.length; i++) {
-      fragment.appendChild(renderMapPin(window.data.nearbyAdvertsList[i]));
+    for (let i = 0; i < adverts.length; i++) {
+      fragment.appendChild(renderMapPin(adverts[i]));
     }
     return mapPinsList.appendChild(fragment);
   };

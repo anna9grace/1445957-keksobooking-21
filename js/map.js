@@ -51,12 +51,12 @@
 
   // open advert card
 
-  const openAdvertCard = (target) => {
+  const openAdvertCard = (data, target) => {
     let mapPins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
 
     for (let i = 0; i < mapPins.length; i++) {
       if (mapPins[i] === target) {
-        window.card.renderAdvertCard(window.data.nearbyAdvertsList[i]);
+        window.card.renderAdvertCard(data[i]);
       }
     }
 
@@ -68,7 +68,7 @@
 
   // handle a click event on advert's map-pin
 
-  const onMapPinClick = (evt) => {
+  const onMapPinClick = (data, evt) => {
     let pinTarget = evt.target.closest(`.map__pin`);
 
     if (!pinTarget || pinTarget.classList.contains(`map__pin--main`)) {
@@ -76,7 +76,7 @@
     }
 
     closeAdvertCard();
-    openAdvertCard(pinTarget);
+    openAdvertCard(data, pinTarget);
   };
 
   window.map = {

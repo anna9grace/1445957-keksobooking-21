@@ -2,7 +2,6 @@
 
 (function () {
   const formFields = document.querySelectorAll(`.map__features, .map__filter, .ad-form fieldset`);
-
   const map = document.querySelector(`.map`);
   const adForm = document.querySelector(`.ad-form`);
   const mapPinMain = document.querySelector(`.map__pin--main`);
@@ -30,13 +29,14 @@
 
     enableFormFields(formFields);
     window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
-    window.pin.renderNearbyMapPins();
+    window.pin.renderNearbyMapPins(window.data.nearbyAdvertsList);
     window.form.checkRoomsValidity();
 
     mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.removeEventListener(`keydown`, window.map.onMainPinKeydown);
     map.addEventListener(`click`, window.map.onMapPinClick);
   };
+
 
   window.page = {
     setActivePageState,

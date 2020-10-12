@@ -29,12 +29,11 @@
 
     enableFormFields(formFields);
     window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
-    window.pin.renderNearbyMapPins(window.data.nearbyAdvertsList);
     window.form.checkRoomsValidity();
+    window.backend.load(window.data.onDataLoad, window.util.showErrorMessage);
 
     mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.removeEventListener(`keydown`, window.map.onMainPinKeydown);
-    map.addEventListener(`click`, window.map.onMapPinClick);
   };
 
 

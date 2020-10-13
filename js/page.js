@@ -21,7 +21,13 @@
     }
   };
 
+
   // activate page
+
+  const onDataLoad = (data) => {
+    window.pin.renderNearbyMapPins(data);
+    map.addEventListener(`click`, window.map.onMapPinClick.bind(null, data));
+  };
 
   const setActivePageState = () => {
     map.classList.remove(`map--faded`);
@@ -30,7 +36,7 @@
     enableFormFields(formFields);
     window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
     window.form.checkRoomsValidity();
-    window.backend.load(window.data.onDataLoad, window.util.showErrorMessage);
+    window.backend.load(onDataLoad, window.util.showErrorMessage);
 
     mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.removeEventListener(`keydown`, window.map.onMainPinKeydown);

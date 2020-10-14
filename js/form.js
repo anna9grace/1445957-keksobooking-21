@@ -14,6 +14,8 @@
   const typeOption = adForm.querySelector(`#type`);
   const timeInOption = adForm.querySelector(`#timein`);
   const timeOutOption = adForm.querySelector(`#timeout`);
+  const templateSuccess = document.querySelector(`#success`).content.querySelector(`.success`);
+  const templateError = document.querySelector(`#error`).content.querySelector(`.error`);
 
 
   // validate rooms' capacity
@@ -53,7 +55,55 @@
     timeInOption.value = timeOutOption.value;
   });
 
+
+  // close message
+
+  const closeMessage = () => {
+    let message = document.querySelector(`.success`) || document.querySelector(`.error`);
+    message.remove();
+    document.removeEventListener(`keydown`, onMessageEscPress);
+    document.removeEventListener(`click`, closeMessage);
+  };
+
+  const onMessageEscPress = (evt) => {
+    if (evt.key === `Escape`) {
+      closeMessage();
+    }
+  };
+
+  // show message
+
+  const showMessage = (template) => {
+    const element = template.cloneNode(true);
+    document.querySelector(`main`).insertAdjacentElement(`afterbegin`, element);
+    document.addEventListener(`keydown`, onMessageEscPress);
+    document.addEventListener(`click`, closeMessage);
+  };
+
+  // submit new advert's form
+
+  const onPublishSuccess = () => {
+    showMessage(templateSuccess);
+    window.page.resetPage();
+  };
+
+  const onPublishError = () => {
+    showMessage(templateError);
+    const message = document.querySelector(`.error`);
+    message.setAttribute(`tabindex`, `0`);
+    message.focus();
+    message.style.outline = `none`;
+  };
+
+
+  adForm.addEventListener(`submit`, function (evt) {
+    evt.preventDefault();
+    window.backend.publish(new FormData(adForm), onPublishSuccess, onPublishError);
+  });
+
+
   window.form = {
     checkRoomsValidity,
+    checkPriceValidity,
   };
 })();

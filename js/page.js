@@ -4,7 +4,9 @@
   const formFields = document.querySelectorAll(`.map__features, .map__filter, .ad-form fieldset`);
   const map = document.querySelector(`.map`);
   const adForm = document.querySelector(`.ad-form`);
+  const filters = document.querySelector(`.map__filters`);
   const mapPinMain = document.querySelector(`.map__pin--main`);
+  const resetButton = document.querySelector(`.ad-form__reset`);
 
 
   // set to default inactive state
@@ -38,13 +40,41 @@
     window.form.checkRoomsValidity();
     window.backend.load(onDataLoad, window.util.showErrorMessage);
 
+    resetButton.addEventListener(`click`, resetPage);
     mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.removeEventListener(`keydown`, window.map.onMainPinKeydown);
+  };
+
+
+  // reset page
+
+  const resetPage = () => {
+    for (let pin of document.querySelectorAll(`.map__pin:not(:first-of-type)`)) {
+      pin.remove();
+    }
+
+    mapPinMain.style.left = window.main.mainPinDefaultPosition.x + `px`;
+    mapPinMain.style.top = window.main.mainPinDefaultPosition.y + `px`;
+    adForm.reset();
+    filters.reset();
+    window.form.checkPriceValidity();
+    window.map.closeAdvertCard();
+    window.map.renderPinCoordinates(0.5, 0);
+    disableFormFields(formFields);
+
+
+    map.classList.add(`map--faded`);
+    adForm.classList.add(`ad-form--disabled`);
+
+    resetButton.removeEventListener(`click`, resetPage);
+    mapPinMain.addEventListener(`mousedown`, window.map.onMainPinClick);
+    mapPinMain.addEventListener(`keydown`, window.map.onMainPinKeydown);
   };
 
 
   window.page = {
     setActivePageState,
     disableFormFields,
+    resetPage,
   };
 })();

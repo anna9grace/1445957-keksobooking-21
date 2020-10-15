@@ -84,5 +84,6 @@
     onMapPinClick,
     onMainPinClick,
     onMainPinKeydown,
+    closeAdvertCard,
   };
 })();

@@ -2,20 +2,19 @@
 
 (function () {
   const TIMEOUT = 10000;
-  const statusCode = {
+
+  const StatusCode = {
     OK: 200,
   };
 
-  const load = (onSuccess, onError) => {
-    const URL = `https://21.javascript.pages.academy/keksobooking/data`;
-
+  const sendRequest = (url, method, onSuccess, onError, data = ``) => {
     const xhr = new XMLHttpRequest();
     xhr.responseType = `json`;
-    xhr.open(`GET`, URL);
-    xhr.send();
+    xhr.open(method, url);
+    xhr.send(data);
 
     xhr.addEventListener(`load`, () => {
-      if (xhr.status === statusCode.OK) {
+      if (xhr.status === StatusCode.OK) {
         onSuccess(xhr.response);
       } else {
         onError(`Статус ответа: ${xhr.status} ${xhr.statusText}`);
@@ -32,7 +31,8 @@
     });
   };
 
+
   window.backend = {
-    load,
+    sendRequest,
   };
 })();

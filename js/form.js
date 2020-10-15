@@ -14,6 +14,9 @@
   const typeOption = adForm.querySelector(`#type`);
   const timeInOption = adForm.querySelector(`#timein`);
   const timeOutOption = adForm.querySelector(`#timeout`);
+  const templateSuccess = document.querySelector(`#success`).content.querySelector(`.success`);
+  const templateError = document.querySelector(`#error`).content.querySelector(`.error`);
+  const URL_POST = `https://21.javascript.pages.academy/keksobooking`;
 
 
   // validate rooms' capacity
@@ -43,9 +46,15 @@
     priceField.placeholder = minPrice[type];
   };
 
-  roomOption.addEventListener(`change`, checkRoomsValidity);
-  guestOption.addEventListener(`change`, checkRoomsValidity);
-  typeOption.addEventListener(`change`, checkPriceValidity);
+  roomOption.addEventListener(`change`, () => {
+    checkRoomsValidity();
+  });
+  guestOption.addEventListener(`change`, () => {
+    checkRoomsValidity();
+  });
+  typeOption.addEventListener(`change`, () => {
+    checkPriceValidity();
+  });
   timeInOption.addEventListener(`change`, () => {
     timeOutOption.value = timeInOption.value;
   });
@@ -53,7 +62,59 @@
     timeInOption.value = timeOutOption.value;
   });
 
+
+  // close message
+
+  const closeMessage = () => {
+    let message = document.querySelector(`.success`) || document.querySelector(`.error`);
+    message.remove();
+    document.removeEventListener(`keydown`, onMessageEscPress);
+    document.removeEventListener(`click`, () => {
+      closeMessage();
+    });
+  };
+
+  const onMessageEscPress = (evt) => {
+    if (evt.key === `Escape`) {
+      closeMessage();
+    }
+  };
+
+  // show message
+
+  const showMessage = (template) => {
+    const element = template.cloneNode(true);
+    document.querySelector(`main`).insertAdjacentElement(`afterbegin`, element);
+    document.addEventListener(`keydown`, onMessageEscPress);
+    document.addEventListener(`click`, () => {
+      closeMessage();
+    });
+  };
+
+  // submit new advert's form
+
+  const onPublishSuccess = () => {
+    showMessage(templateSuccess);
+    window.page.resetPage();
+  };
+
+  const onPublishError = () => {
+    showMessage(templateError);
+    const message = document.querySelector(`.error`);
+    message.setAttribute(`tabindex`, `0`);
+    message.focus();
+    message.style.outline = `none`;
+  };
+
+
+  adForm.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    window.backend.sendRequest(URL_POST, `POST`, onPublishSuccess, onPublishError, new FormData(adForm));
+  });
+
+
   window.form = {
     checkRoomsValidity,
+    checkPriceValidity,
   };
 })();

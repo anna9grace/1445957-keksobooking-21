@@ -7,6 +7,7 @@
   const filters = document.querySelector(`.map__filters`);
   const mapPinMain = document.querySelector(`.map__pin--main`);
   const resetButton = document.querySelector(`.ad-form__reset`);
+  const URL_GET = `https://21.javascript.pages.academy/keksobooking/data`;
 
 
   // set to default inactive state
@@ -38,13 +39,14 @@
     enableFormFields(formFields);
     window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
     window.form.checkRoomsValidity();
-    window.backend.load(onDataLoad, window.util.showErrorMessage);
+    window.backend.sendRequest(URL_GET, `GET`, onDataLoad, window.util.onErrorMessage);
 
-    resetButton.addEventListener(`click`, resetPage);
+    resetButton.addEventListener(`click`, () => {
+      resetPage();
+    });
     mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.removeEventListener(`keydown`, window.map.onMainPinKeydown);
   };
-
 
   // reset page
 
@@ -66,7 +68,9 @@
     map.classList.add(`map--faded`);
     adForm.classList.add(`ad-form--disabled`);
 
-    resetButton.removeEventListener(`click`, resetPage);
+    resetButton.removeEventListener(`click`, () => {
+      resetPage();
+    });
     mapPinMain.addEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.addEventListener(`keydown`, window.map.onMainPinKeydown);
   };

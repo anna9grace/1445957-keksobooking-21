@@ -16,6 +16,7 @@
   const timeOutOption = adForm.querySelector(`#timeout`);
   const templateSuccess = document.querySelector(`#success`).content.querySelector(`.success`);
   const templateError = document.querySelector(`#error`).content.querySelector(`.error`);
+  const URL_POST = `https://21.javascript.pages.academy/keksobooking`;
 
 
   // validate rooms' capacity
@@ -45,9 +46,15 @@
     priceField.placeholder = minPrice[type];
   };
 
-  roomOption.addEventListener(`change`, checkRoomsValidity);
-  guestOption.addEventListener(`change`, checkRoomsValidity);
-  typeOption.addEventListener(`change`, checkPriceValidity);
+  roomOption.addEventListener(`change`, () => {
+    checkRoomsValidity();
+  });
+  guestOption.addEventListener(`change`, () => {
+    checkRoomsValidity();
+  });
+  typeOption.addEventListener(`change`, () => {
+    checkPriceValidity();
+  });
   timeInOption.addEventListener(`change`, () => {
     timeOutOption.value = timeInOption.value;
   });
@@ -62,7 +69,9 @@
     let message = document.querySelector(`.success`) || document.querySelector(`.error`);
     message.remove();
     document.removeEventListener(`keydown`, onMessageEscPress);
-    document.removeEventListener(`click`, closeMessage);
+    document.removeEventListener(`click`, () => {
+      closeMessage();
+    });
   };
 
   const onMessageEscPress = (evt) => {
@@ -77,7 +86,9 @@
     const element = template.cloneNode(true);
     document.querySelector(`main`).insertAdjacentElement(`afterbegin`, element);
     document.addEventListener(`keydown`, onMessageEscPress);
-    document.addEventListener(`click`, closeMessage);
+    document.addEventListener(`click`, () => {
+      closeMessage();
+    });
   };
 
   // submit new advert's form
@@ -96,9 +107,9 @@
   };
 
 
-  adForm.addEventListener(`submit`, function (evt) {
+  adForm.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
-    window.backend.publish(new FormData(adForm), onPublishSuccess, onPublishError);
+    window.backend.sendRequest(URL_POST, `POST`, onPublishSuccess, onPublishError, new FormData(adForm));
   });
 
 

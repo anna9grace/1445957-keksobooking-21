@@ -51,14 +51,15 @@
 
   // open advert card
 
-  const openAdvertCard = (data, target) => {
+  const openAdvertCard = (adverts, target) => {
     let mapPins = map.querySelectorAll(`.map__pin:not(:first-of-type)`);
 
     for (let i = 0; i < mapPins.length; i++) {
       if (mapPins[i] === target) {
-        window.card.renderAdvertCard(data[i]);
+        window.card.renderAdvertCard(adverts[i]);
       }
     }
+
 
     document.addEventListener(`keydown`, onPopupEscPress);
     map.querySelector(`.popup__close`).addEventListener(`click`, () => {
@@ -68,20 +69,25 @@
 
   // handle a click event on advert's map-pin
 
-  const onMapPinClick = (data, evt) => {
+  const showCurrentCard = (adverts, evt) => {
     let pinTarget = evt.target.closest(`.map__pin`);
+    let lastTarget = document.querySelector(`.map__pin--active`);
 
     if (!pinTarget || pinTarget.classList.contains(`map__pin--main`)) {
       return;
     }
 
+    if (lastTarget) {
+      lastTarget.classList.remove(`map__pin--active`);
+    }
+    pinTarget.classList.add(`map__pin--active`);
     closeAdvertCard();
-    openAdvertCard(data, pinTarget);
+    openAdvertCard(adverts, pinTarget);
   };
 
   window.map = {
     renderPinCoordinates,
-    onMapPinClick,
+    showCurrentCard,
     onMainPinClick,
     onMainPinKeydown,
     closeAdvertCard,

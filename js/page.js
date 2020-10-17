@@ -1,13 +1,15 @@
 'use strict';
 
 (function () {
-  const formFields = document.querySelectorAll(`.map__features, .map__filter, .ad-form fieldset`);
+  const formFields = document.querySelectorAll(`.map__filters, .ad-form`);
   const map = document.querySelector(`.map`);
   const adForm = document.querySelector(`.ad-form`);
   const filters = document.querySelector(`.map__filters`);
   const mapPinMain = document.querySelector(`.map__pin--main`);
   const resetButton = document.querySelector(`.ad-form__reset`);
   const URL_GET = `https://21.javascript.pages.academy/keksobooking/data`;
+  let adverts = [];
+  let filteredAdverts = [];
 
 
   // set to default inactive state
@@ -27,19 +29,34 @@
 
   // activate page
 
-  const onDataLoad = (data) => {
-    window.pin.renderNearbyMapPins(data);
-    map.addEventListener(`click`, window.map.onMapPinClick.bind(null, data));
+  const renderNearbyPins = () => {
+    window.pin.renderMapPins(window.page.filteredAdverts);
   };
+
+  const onMapPinClick = (evt) => {
+    window.map.showCurrentCard(window.page.filteredAdverts, evt);
+  };
+
+
+  const onDataLoad = (data) => {
+    window.page.adverts = data;
+    window.page.filteredAdverts = window.page.adverts;
+
+    map.addEventListener(`click`, onMapPinClick);
+
+    renderNearbyPins();
+    enableFormFields(filters);
+  };
+
 
   const setActivePageState = () => {
     map.classList.remove(`map--faded`);
     adForm.classList.remove(`ad-form--disabled`);
 
-    enableFormFields(formFields);
+    enableFormFields(adForm);
     window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
     window.form.checkRoomsValidity();
-    window.backend.sendRequest(URL_GET, `GET`, onDataLoad, window.util.onErrorMessage);
+    window.backend.sendRequest(URL_GET, `GET`, onDataLoad, window.util.onDataLoadError);
 
     resetButton.addEventListener(`click`, () => {
       resetPage();
@@ -47,6 +64,7 @@
     mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.removeEventListener(`keydown`, window.map.onMainPinKeydown);
   };
+
 
   // reset page
 
@@ -68,9 +86,12 @@
     map.classList.add(`map--faded`);
     adForm.classList.add(`ad-form--disabled`);
 
+    map.removeEventListener(`click`, onMapPinClick);
     resetButton.removeEventListener(`click`, () => {
       resetPage();
     });
+
+
     mapPinMain.addEventListener(`mousedown`, window.map.onMainPinClick);
     mapPinMain.addEventListener(`keydown`, window.map.onMainPinKeydown);
   };
@@ -80,5 +101,8 @@
     setActivePageState,
     disableFormFields,
     resetPage,
+    adverts,
+    filteredAdverts,
+    renderNearbyPins,
   };
 })();

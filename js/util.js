@@ -12,7 +12,7 @@
     return arr[randomElement];
   };
 
-  const onErrorMessage = (message) => {
+  const onDataLoadError = (message) => {
     const node = document.createElement(`div`);
     node.style.zIndex = `100`;
     node.style.textAlign = `center`;
@@ -30,6 +30,6 @@
   window.util = {
     getRandomInt,
     getRandomArrayElement,
-    onErrorMessage,
+    onDataLoadError,
   };
 })();

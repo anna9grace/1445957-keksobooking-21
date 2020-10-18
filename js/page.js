@@ -36,7 +36,7 @@
 
   const onDataLoad = (data) => {
     window.page.adverts = data;
-    window.page.filteredAdverts = window.page.adverts;
+    window.page.filteredAdverts = data;
 
     map.addEventListener(`click`, onMapPinClick);
 

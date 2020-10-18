@@ -5,11 +5,11 @@
   const typeOption = document.querySelector(`#housing-type`);
 
 
-  let filterType = (advert) => {
+  let filterType = (element) => {
     if (typeOption.value !== `any`) {
-      return advert.offer.type === typeOption.value;
+      return element.offer.type === typeOption.value;
     }
-    return advert.offer.type;
+    return element.offer.type;
   };
 
 

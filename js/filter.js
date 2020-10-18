@@ -1,25 +1,27 @@
 'use strict';
 
 (function () {
-  const filters = document.querySelectorAll(`.map__filter, .map__checkbox`);
+  const filters = document.querySelector(`.map__filters`);
   const typeOption = document.querySelector(`#housing-type`);
+
+
+  let filterType = (advert) => {
+    if (typeOption.value !== `any`) {
+      return advert.offer.type === typeOption.value;
+    }
+    return advert.offer.type;
+  };
 
 
   const onFilterChange = () => {
     window.map.closeAdvertCard();
 
-    window.page.filteredAdverts = (typeOption.value === `any`)
-      ? window.page.adverts
-      : window.page.adverts.filter((element) => {
-        return element.offer.type === typeOption.value;
-      });
+    window.page.filteredAdverts = window.page.adverts.filter((advert) => {
+      return filterType(advert);
+    });
 
-    window.page.renderNearbyPins();
+    window.pin.renderMapPins(window.page.filteredAdverts);
   };
 
-
-  for (let filter of filters) {
-    filter.addEventListener(`change`, onFilterChange);
-  }
-
+  filters.addEventListener(`change`, onFilterChange);
 })();

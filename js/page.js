@@ -29,10 +29,6 @@
 
   // activate page
 
-  const renderNearbyPins = () => {
-    window.pin.renderMapPins(window.page.filteredAdverts);
-  };
-
   const onMapPinClick = (evt) => {
     window.map.showCurrentCard(window.page.filteredAdverts, evt);
   };
@@ -44,7 +40,7 @@
 
     map.addEventListener(`click`, onMapPinClick);
 
-    renderNearbyPins();
+    window.pin.renderMapPins(data);
     enableFormFields(filters);
   };
 
@@ -103,6 +99,5 @@
     resetPage,
     adverts,
     filteredAdverts,
-    renderNearbyPins,
   };
 })();

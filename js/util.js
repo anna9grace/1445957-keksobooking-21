@@ -27,9 +27,24 @@
     document.body.insertAdjacentElement(`afterbegin`, node);
   };
 
+
+  const debounce = (cb, timeout = 500) => {
+    let lastTimeout = null;
+
+    return (...parameters) => {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(() => {
+        cb(...parameters);
+      }, timeout);
+    };
+  };
+
   window.util = {
     getRandomInt,
     getRandomArrayElement,
     onDataLoadError,
+    debounce,
   };
 })();

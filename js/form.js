@@ -2,10 +2,10 @@
 
 (function () {
   const minPrice = {
-    palace: 10000,
-    flat: 1000,
-    house: 5000,
-    bungalow: 0,
+    PALACE: 10000,
+    FLAT: 1000,
+    HOUSE: 5000,
+    BUNGALOW: 0,
   };
   const adForm = document.querySelector(`.ad-form`);
   const roomOption = adForm.querySelector(`#room_number`);
@@ -42,8 +42,8 @@
 
   const checkPriceValidity = () => {
     let type = typeOption.value;
-    priceField.min = minPrice[type];
-    priceField.placeholder = minPrice[type];
+    priceField.min = minPrice[type.toUpperCase()];
+    priceField.placeholder = minPrice[type.toUpperCase()];
   };
 
   roomOption.addEventListener(`change`, () => {

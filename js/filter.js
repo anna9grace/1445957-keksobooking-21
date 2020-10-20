@@ -7,20 +7,19 @@
   const roomsOption = document.querySelector(`#housing-rooms`);
   const guestsOption = document.querySelector(`#housing-guests`);
   const prices = {
-    low: {
-      min: 0,
-      max: 9999,
+    LOW: {
+      MIN: 0,
+      MAX: 9999,
     },
-    middle: {
-      min: 10000,
-      max: 50000,
+    MIDDLE: {
+      MIN: 10000,
+      MAX: 50000,
     },
-    high: {
-      min: 50001,
-      max: 10000000,
+    HIGH: {
+      MIN: 50001,
+      MAX: 10000000,
     },
   };
-  let lastTimeout;
   const TIMEOUT = 500;
 
 
@@ -30,8 +29,8 @@
 
   const filterPrice = (element) => {
     return priceOption.value !== `any`
-      ? element.offer.price <= prices[priceOption.value].max &&
-        element.offer.price >= prices[priceOption.value].min
+      ? element.offer.price <= prices[priceOption.value.toUpperCase()].MAX &&
+        element.offer.price >= prices[priceOption.value.toUpperCase()].MIN
       : true;
   };
 
@@ -44,18 +43,10 @@
   };
 
   const filterFeatures = (element) => {
-    const chosenOptions = filters.querySelectorAll(`input:checked`);
-    let fit = true;
-
-    if (chosenOptions.length === 0) {
-      return true;
-    }
-    for (let option of chosenOptions) {
-      if (element.offer.features.indexOf(option.value) < 0) {
-        fit = false;
-      }
-    }
-    return fit;
+    const chosenOptions = Array.from(filters.querySelectorAll(`input:checked`));
+    return chosenOptions.every((option)=> {
+      return element.offer.features.indexOf(option.value) !== -1;
+    });
   };
 
 
@@ -69,13 +60,7 @@
     window.pin.renderMapPins(window.page.filteredAdverts);
   };
 
-
-  const onFilterChange = () => {
-    if (lastTimeout) {
-      window.clearTimeout(lastTimeout);
-    }
-    lastTimeout = window.setTimeout(applyFilters, TIMEOUT);
-  };
+  const onFilterChange = window.util.debounce(applyFilters, TIMEOUT);
 
 
   filters.addEventListener(`change`, onFilterChange);

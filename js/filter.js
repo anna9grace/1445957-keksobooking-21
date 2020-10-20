@@ -20,7 +20,6 @@
       MAX: 10000000,
     },
   };
-  const TIMEOUT = 500;
 
 
   const filterType = (element) => {
@@ -60,7 +59,7 @@
     window.pin.renderMapPins(window.page.filteredAdverts);
   };
 
-  const onFilterChange = window.util.debounce(applyFilters, TIMEOUT);
+  const onFilterChange = window.util.debounce(applyFilters);
 
 
   filters.addEventListener(`change`, onFilterChange);

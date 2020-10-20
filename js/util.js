@@ -28,7 +28,7 @@
   };
 
 
-  const debounce = (cb, timeout) => {
+  const debounce = (cb, timeout = 500) => {
     let lastTimeout = null;
 
     return (...parameters) => {

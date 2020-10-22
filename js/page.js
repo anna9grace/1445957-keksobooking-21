@@ -53,7 +53,8 @@ const setActivePageState = () => {
   window.form.checkRoomsValidity();
   window.backend.sendRequest(URL_GET, `GET`, onDataLoad, window.util.onDataLoadError);
 
-  resetButton.addEventListener(`click`, () => {
+  resetButton.addEventListener(`click`, (evt) => {
+    evt.preventDefault();
     resetPage();
   });
   mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);

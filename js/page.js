@@ -1,11 +1,13 @@
 'use strict';
 
+const URL_GET = `https://21.javascript.pages.academy/keksobooking/data`;
 const formFields = document.querySelectorAll(`.map__filters, .ad-form`);
 const map = document.querySelector(`.map`);
 const adForm = document.querySelector(`.ad-form`);
 const filters = document.querySelector(`.map__filters`);
 const mapPinMain = document.querySelector(`.map__pin--main`);
-const URL_GET = `https://21.javascript.pages.academy/keksobooking/data`;
+const defaultPreview = adForm.querySelector(`.ad-form__photo`).innerHTML;
+const defaultAvatar = adForm.querySelector(`.ad-form-header__preview img`).src;
 let adverts = [];
 let filteredAdverts = [];
 
@@ -64,10 +66,12 @@ const resetPage = () => {
     pin.remove();
   }
 
+  filters.reset();
+  adForm.reset();
+  adForm.querySelector(`.ad-form__photo`).innerHTML = defaultPreview;
+  adForm.querySelector(`.ad-form-header__preview img`).src = defaultAvatar;
   mapPinMain.style.left = window.main.mainPinDefaultPosition.x + `px`;
   mapPinMain.style.top = window.main.mainPinDefaultPosition.y + `px`;
-  adForm.reset();
-  filters.reset();
   window.form.checkPriceValidity();
   window.map.closeAdvertCard();
   window.map.renderPinCoordinates(0.5, 0);

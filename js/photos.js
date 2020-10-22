@@ -9,7 +9,7 @@ const avatarPreview = document.querySelector(`.ad-form-header__preview`);
 const photoPreview = document.querySelector(`.ad-form__photo`);
 
 const createPreviewElement = (parent) => {
-  let element = document.createElement(`img`);
+  const element = document.createElement(`img`);
   element.alt = `Фотография жилья`;
   element.setAttribute(`width`, PHOTO_WIDTH);
   element.setAttribute(`height`, PHOTO_HEIGHT);
@@ -19,15 +19,15 @@ const createPreviewElement = (parent) => {
 
 
 const loadPreview = (chooser, preview) => {
-  let file = chooser.files[0];
-  let fileName = file.name.toLowerCase();
+  const file = chooser.files[0];
+  const fileName = file.name.toLowerCase();
 
   let matches = FILE_TYPES.some((element) => {
     return fileName.endsWith(element);
   });
 
   if (matches) {
-    let reader = new FileReader();
+    const reader = new FileReader();
     let image = preview.querySelector(`img`);
 
     if (!image) {

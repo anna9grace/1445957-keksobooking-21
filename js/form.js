@@ -1,6 +1,6 @@
 'use strict';
 
-const minPrice = {
+const MinPrice = {
   PALACE: 10000,
   FLAT: 1000,
   HOUSE: 5000,
@@ -41,9 +41,9 @@ const checkRoomsValidity = () => {
 // validate price per night
 
 const checkPriceValidity = () => {
-  let type = typeOption.value;
-  priceField.min = minPrice[type.toUpperCase()];
-  priceField.placeholder = minPrice[type.toUpperCase()];
+  const type = typeOption.value;
+  priceField.min = MinPrice[type.toUpperCase()];
+  priceField.placeholder = MinPrice[type.toUpperCase()];
 };
 
 roomOption.addEventListener(`change`, () => {

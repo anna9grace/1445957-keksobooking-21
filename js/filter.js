@@ -5,7 +5,7 @@ const typeOption = document.querySelector(`#housing-type`);
 const priceOption = document.querySelector(`#housing-price`);
 const roomsOption = document.querySelector(`#housing-rooms`);
 const guestsOption = document.querySelector(`#housing-guests`);
-const prices = {
+const Prices = {
   LOW: {
     MIN: 0,
     MAX: 9999,
@@ -27,8 +27,8 @@ const filterType = (element) => {
 
 const filterPrice = (element) => {
   return priceOption.value !== `any`
-    ? element.offer.price <= prices[priceOption.value.toUpperCase()].MAX &&
-      element.offer.price >= prices[priceOption.value.toUpperCase()].MIN
+    ? element.offer.price <= Prices[priceOption.value.toUpperCase()].MAX &&
+      element.offer.price >= Prices[priceOption.value.toUpperCase()].MIN
     : true;
 };
 

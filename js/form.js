@@ -15,6 +15,7 @@ const timeInOption = adForm.querySelector(`#timein`);
 const timeOutOption = adForm.querySelector(`#timeout`);
 const templateSuccess = document.querySelector(`#success`).content.querySelector(`.success`);
 const templateError = document.querySelector(`#error`).content.querySelector(`.error`);
+const resetButton = document.querySelector(`.ad-form__reset`);
 const URL_POST = `https://21.javascript.pages.academy/keksobooking`;
 
 
@@ -64,20 +65,18 @@ timeOutOption.addEventListener(`change`, () => {
 
 // close message
 
-const closeMessage = () => {
+const onMessageClose = () => {
   let message = document.querySelector(`.success`) || document.querySelector(`.error`);
   if (message) {
     message.remove();
   }
   document.removeEventListener(`keydown`, onMessageEscPress);
-  document.removeEventListener(`click`, () => {
-    closeMessage();
-  });
+  document.removeEventListener(`click`, onMessageClose);
 };
 
 const onMessageEscPress = (evt) => {
   if (evt.key === `Escape`) {
-    closeMessage();
+    onMessageClose();
   }
 };
 
@@ -87,9 +86,7 @@ const showMessage = (template) => {
   const element = template.cloneNode(true);
   document.querySelector(`main`).insertAdjacentElement(`afterbegin`, element);
   document.addEventListener(`keydown`, onMessageEscPress);
-  document.addEventListener(`click`, () => {
-    closeMessage();
-  });
+  document.addEventListener(`click`, onMessageClose);
 };
 
 // submit new advert's form
@@ -113,6 +110,10 @@ adForm.addEventListener(`submit`, (evt) => {
   window.backend.sendRequest(URL_POST, `POST`, onPublishSuccess, onPublishError, new FormData(adForm));
 });
 
+resetButton.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  window.page.resetPage();
+});
 
 window.form = {
   checkRoomsValidity,

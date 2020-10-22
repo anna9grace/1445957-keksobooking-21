@@ -36,8 +36,10 @@ mapPinMain.addEventListener(`keydown`, onMainPinKeydown);
 
 const closeAdvertCard = () => {
   let card = map.querySelector(`.map__card`);
+  let activePin = document.querySelector(`.map__pin--active`);
   if (card) {
     card.remove();
+    activePin.classList.remove(`map__pin--active`);
     document.removeEventListener(`keydown`, onPopupEscPress);
   }
 };
@@ -70,17 +72,13 @@ const openAdvertCard = (adverts, target) => {
 
 const showCurrentCard = (adverts, evt) => {
   let pinTarget = evt.target.closest(`.map__pin`);
-  let lastTarget = document.querySelector(`.map__pin--active`);
 
   if (!pinTarget || pinTarget.classList.contains(`map__pin--main`)) {
     return;
   }
 
-  if (lastTarget) {
-    lastTarget.classList.remove(`map__pin--active`);
-  }
-  pinTarget.classList.add(`map__pin--active`);
   closeAdvertCard();
+  pinTarget.classList.add(`map__pin--active`);
   openAdvertCard(adverts, pinTarget);
 };
 

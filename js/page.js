@@ -16,13 +16,13 @@ let filteredAdverts = [];
 
 const disableFormFields = (fields) => {
   for (let field of fields) {
-    field.setAttribute(`disabled`, `disabled`);
+    field.disabled = `disabled`;
   }
 };
 
 const enableFormFields = (fields) => {
   for (let field of fields) {
-    field.removeAttribute(`disabled`);
+    field.disabled = ``;
   }
 };
 
@@ -35,8 +35,12 @@ const onMapPinClick = (evt) => {
 
 
 const onDataLoad = (data) => {
-  window.page.adverts = data;
-  window.page.filteredAdverts = data;
+  data.forEach((element) => {
+    if (element.offer) {
+      window.page.adverts.push(element);
+    }
+  });
+  window.page.filteredAdverts = window.page.adverts;
 
   map.addEventListener(`click`, onMapPinClick);
 

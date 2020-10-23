@@ -99,7 +99,7 @@ const onPublishSuccess = () => {
 const onPublishError = () => {
   showMessage(templateError);
   const message = document.querySelector(`.error`);
-  message.setAttribute(`tabindex`, `0`);
+  message.tabIndex = 0;
   message.focus();
   message.style.outline = `none`;
 };

@@ -1,7 +1,6 @@
 'use strict';
 
 const TIMEOUT = 10000;
-
 const StatusCode = {
   OK: 200,
 };

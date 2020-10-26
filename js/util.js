@@ -15,7 +15,6 @@ const onDataLoadError = (message) => {
   document.body.insertAdjacentElement(`afterbegin`, element);
 };
 
-
 const debounce = (cb, timeout = 500) => {
   let lastTimeout = null;
 

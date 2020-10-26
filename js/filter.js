@@ -20,7 +20,6 @@ const Prices = {
   },
 };
 
-
 const filterType = (element) => {
   return typeOption.value !== `any` ? element.offer.type === typeOption.value : true;
 };
@@ -47,7 +46,6 @@ const filterFeatures = (element) => {
   });
 };
 
-
 const applyFilters = () => {
   window.map.closeAdvertCard();
 
@@ -58,7 +56,4 @@ const applyFilters = () => {
   window.pin.renderMapPins(window.page.filteredAdverts);
 };
 
-const onFilterChange = window.util.debounce(applyFilters);
-
-
-filters.addEventListener(`change`, onFilterChange);
+filters.addEventListener(`change`, window.util.debounce(applyFilters));

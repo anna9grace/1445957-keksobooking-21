@@ -19,11 +19,13 @@ const renderMapPin = (advert) => {
   return mapPinElement;
 };
 
+
 // create map-pins for existing adverts
 
 const renderMapPins = (adverts) => {
   let numberOfPins = (MAX_PINS_NUMBER < adverts.length) ? MAX_PINS_NUMBER : adverts.length;
-  for (let pin of document.querySelectorAll(`.map__pin:not(:first-of-type)`)) {
+  const pins = document.querySelectorAll(`.map__pin:not(:first-of-type)`);
+  for (let pin of pins) {
     pin.remove();
   }
   const fragment = document.createDocumentFragment();

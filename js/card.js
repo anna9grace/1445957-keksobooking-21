@@ -22,6 +22,7 @@ const renderFeatures = (element, advert) => {
   });
 };
 
+
 // fill capacity characteristics for a current card
 
 const getAccomodationCapacity = (advert) => {
@@ -36,6 +37,7 @@ const getAccomodationCapacity = (advert) => {
 
   return advert.offer.rooms + rooms + ` для ` + advert.offer.guests + guests;
 };
+
 
 // fill list of photos for a current card
 
@@ -52,6 +54,7 @@ const renderPhotos = (element, advert) => {
   photo.remove();
   return photoList.appendChild(fragment);
 };
+
 
 // create an element: advert card
 

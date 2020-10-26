@@ -17,7 +17,6 @@ const createPreviewElement = (parent) => {
   return element;
 };
 
-
 const loadPreview = (chooser, preview) => {
   const file = chooser.files[0];
   const fileName = file.name.toLowerCase();

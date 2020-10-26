@@ -38,6 +38,7 @@ const checkRoomsValidity = () => {
   }
 };
 
+
 // validate price per night
 
 const checkPriceValidity = () => {
@@ -49,15 +50,19 @@ const checkPriceValidity = () => {
 roomOption.addEventListener(`change`, () => {
   checkRoomsValidity();
 });
+
 guestOption.addEventListener(`change`, () => {
   checkRoomsValidity();
 });
+
 typeOption.addEventListener(`change`, () => {
   checkPriceValidity();
 });
+
 timeInOption.addEventListener(`change`, () => {
   timeOutOption.value = timeInOption.value;
 });
+
 timeOutOption.addEventListener(`change`, () => {
   timeInOption.value = timeOutOption.value;
 });
@@ -80,6 +85,7 @@ const onMessageEscPress = (evt) => {
   }
 };
 
+
 // show message
 
 const showMessage = (template) => {
@@ -88,6 +94,7 @@ const showMessage = (template) => {
   document.addEventListener(`keydown`, onMessageEscPress);
   document.addEventListener(`click`, onMessageClose);
 };
+
 
 // submit new advert's form
 
@@ -103,7 +110,6 @@ const onPublishError = () => {
   message.focus();
   message.style.outline = `none`;
 };
-
 
 adForm.addEventListener(`submit`, (evt) => {
   evt.preventDefault();

@@ -29,7 +29,6 @@ const sendRequest = (url, method, onSuccess, onError, data = ``) => {
   });
 };
 
-
 window.backend = {
   sendRequest,
 };

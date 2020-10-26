@@ -22,6 +22,7 @@ const calculatePinPositon = (coordinates, start, end, property) => {
   }
 };
 
+
 // handle main pin's moving event
 
 mapPinMain.addEventListener(`mousedown`, (evt) => {
@@ -42,7 +43,6 @@ mapPinMain.addEventListener(`mousedown`, (evt) => {
 
     startCoordinates.x = moveEvt.clientX;
     startCoordinates.y = moveEvt.clientY;
-
 
     const pinNewCoordinates = {
       x: mapPinMain.offsetLeft - shift.x,

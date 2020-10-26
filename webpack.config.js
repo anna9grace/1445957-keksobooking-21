@@ -9,7 +9,7 @@ module.exports = {
     `./js/pin.js`,
     `./js/card.js`,
     `./js/map.js`,
-    `./js/pin-move.js`,
+    `./js/pinMove.js`,
     `./js/filter.js`,
     `./js/page.js`,
     `./js/form.js`,

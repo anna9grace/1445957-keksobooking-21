@@ -7,6 +7,10 @@ const adForm = document.querySelector(`.ad-form`);
 const filters = document.querySelector(`.map__filters`);
 const mapPinMain = document.querySelector(`.map__pin--main`);
 const defaultAvatar = adForm.querySelector(`.ad-form-header__preview img`).src;
+const mainPinDefaultPosition = {
+  x: mapPinMain.offsetLeft,
+  y: mapPinMain.offsetTop,
+};
 let adverts = [];
 let filteredAdverts = [];
 
@@ -46,6 +50,11 @@ const onDataLoad = (data) => {
   enableFormFields(filters);
 };
 
+const onDataLoadError = (text) => {
+  const message = window.util.getMessage(text);
+  document.body.insertAdjacentElement(`afterbegin`, message);
+};
+
 const setActivePageState = () => {
   map.classList.remove(`map--faded`);
   adForm.classList.remove(`ad-form--disabled`);
@@ -53,7 +62,7 @@ const setActivePageState = () => {
   enableFormFields(adForm);
   window.map.renderPinCoordinates(1, window.constants.MAIN_PIN_POINTER_SIZE);
   window.form.checkRoomsValidity();
-  window.backend.sendRequest(URL_GET, `GET`, onDataLoad, window.util.onDataLoadError);
+  window.backend.sendRequest(URL_GET, `GET`, onDataLoad, onDataLoadError);
 
   mapPinMain.removeEventListener(`mousedown`, window.map.onMainPinClick);
   mapPinMain.removeEventListener(`keydown`, window.map.onMainPinKeydown);
@@ -64,18 +73,17 @@ const setActivePageState = () => {
 
 const resetPage = () => {
   const pins = document.querySelectorAll(`.map__pin:not(:first-of-type)`);
+  window.map.closeAdvertCard();
   for (let pin of pins) {
+    filters.reset();
+    adForm.reset();
     pin.remove();
   }
-
-  filters.reset();
-  adForm.reset();
   adForm.querySelector(`.ad-form__photo`).innerHTML = ``;
   adForm.querySelector(`.ad-form-header__preview img`).src = defaultAvatar;
-  mapPinMain.style.left = window.main.mainPinDefaultPosition.x + `px`;
-  mapPinMain.style.top = window.main.mainPinDefaultPosition.y + `px`;
+  mapPinMain.style.left = mainPinDefaultPosition.x + `px`;
+  mapPinMain.style.top = mainPinDefaultPosition.y + `px`;
   window.form.checkPriceValidity();
-  window.map.closeAdvertCard();
   window.map.renderPinCoordinates(0.5, 0);
   disableFormFields(formFields);
 

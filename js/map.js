@@ -8,11 +8,9 @@ const addressField = document.querySelector(`#address`);
 // calculate main pin's coordinates
 
 const renderPinCoordinates = (pinHeightScale = 0.5, pointerSize = 0) => {
-  const addressCoordinates = {};
-  addressCoordinates.x = Math.floor(mapPinMain.offsetLeft + window.constants.MAIN_PIN_SIZE * 0.5);
-  addressCoordinates.y = Math.floor(mapPinMain.offsetTop + window.constants.MAIN_PIN_SIZE * pinHeightScale + pointerSize);
-  addressField.value = addressCoordinates.x + `, ` + addressCoordinates.y;
-  return addressCoordinates;
+  const x = Math.floor(mapPinMain.offsetLeft + window.constants.MAIN_PIN_SIZE * 0.5);
+  const y = Math.floor(mapPinMain.offsetTop + window.constants.MAIN_PIN_SIZE * pinHeightScale + pointerSize);
+  addressField.value = x + `, ` + y;
 };
 
 
@@ -40,9 +38,7 @@ const closeAdvertCard = () => {
   const card = map.querySelector(`.map__card`);
   const activePin = document.querySelector(`.map__pin--active`);
   if (card) {
-    if (activePin) {
-      activePin.classList.remove(`map__pin--active`);
-    }
+    activePin.classList.remove(`map__pin--active`);
     card.remove();
     document.removeEventListener(`keydown`, onPopupEscPress);
   }

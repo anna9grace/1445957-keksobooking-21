@@ -14,11 +14,7 @@ const renderFeatures = (element, advert) => {
   }
 
   advert.offer.features.forEach((item) => {
-    for (let j = 0; j < features.length; j++) {
-      if (features[j].classList.contains(`popup__feature--${item}`)) {
-        features[j].style.display = ``;
-      }
-    }
+    element.querySelector(`.popup__feature--${item}`).style.display = ``;
   });
 };
 

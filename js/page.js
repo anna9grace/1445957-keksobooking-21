@@ -75,10 +75,10 @@ const resetPage = () => {
   const pins = document.querySelectorAll(`.map__pin:not(:first-of-type)`);
   window.map.closeAdvertCard();
   for (let pin of pins) {
-    filters.reset();
-    adForm.reset();
     pin.remove();
   }
+  filters.reset();
+  adForm.reset();
   adForm.querySelector(`.ad-form__photo`).innerHTML = ``;
   adForm.querySelector(`.ad-form-header__preview img`).src = defaultAvatar;
   mapPinMain.style.left = mainPinDefaultPosition.x + `px`;

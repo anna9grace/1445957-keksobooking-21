@@ -91,6 +91,7 @@ const resetPage = () => {
   adForm.classList.add(`ad-form--disabled`);
 
   map.removeEventListener(`click`, onMapPinClick);
+
   mapPinMain.addEventListener(`mousedown`, window.map.onMainPinClick);
   mapPinMain.addEventListener(`keydown`, window.map.onMainPinKeydown);
 };

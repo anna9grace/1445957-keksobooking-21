@@ -2,6 +2,7 @@
 
 const templateAdvert = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const mapFilters = document.querySelector(`.map__filters-container`);
+const ENDING_CHANGE_NUBMER = 5;
 
 
 // fill list of features for a current card
@@ -23,9 +24,9 @@ const renderFeatures = (element, advert) => {
 
 const getAccomodationCapacity = (advert) => {
   let rooms = ` комната`;
-  if (advert.offer.rooms < 5 && advert.offer.rooms !== 1) {
+  if (advert.offer.rooms < ENDING_CHANGE_NUBMER && advert.offer.rooms !== 1) {
     rooms = ` комнаты`;
-  } else if (advert.offer.rooms >= 5) {
+  } else if (advert.offer.rooms >= ENDING_CHANGE_NUBMER) {
     rooms = ` комнат`;
   }
 
